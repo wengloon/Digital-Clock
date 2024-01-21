@@ -53,7 +53,8 @@ module Digital_Clock(
 				end
 			end
 
-	always @(Sec)//1250
+	//Convert data to two 7segment display
+	always @(Sec)
 		begin
 			InSecHi=Sec/10;		//50/10=5 , ""5""
 			InSecLo=Sec%10;		//5/10 = ""0""
@@ -63,11 +64,12 @@ module Digital_Clock(
 			InHrLo=Hour%10;
 		end
 
-		Decoder7Segment secLo( .In(InSecLo), .segmentDisplay(SecLoSeg));
-		Decoder7Segment secHi( .In(InSecHi), .segmentDisplay(SecHiSeg));
-		Decoder7Segment minLo( .In(InMinLo), .segmentDisplay(MinLoSeg));
-		Decoder7Segment minHi( .In(InMinHi), .segmentDisplay(MinHiSeg));
-		Decoder7Segment hrLo( .In(InHrLo), .segmentDisplay(HrLoSeg));
-		Decoder7Segment hrHi( .In(InHrHi), .segmentDisplay(HrHiSeg));
+		Decoder7Segment secLo( .In(InSecLo), .segmentDisplay(SecLoSeg));	//s1
+		Decoder7Segment secHi( .In(InSecHi), .segmentDisplay(SecHiSeg));	//s2
+		Decoder7Segment minLo( .In(InMinLo), .segmentDisplay(MinLoSeg));	//m1
+		Decoder7Segment minHi( .In(InMinHi), .segmentDisplay(MinHiSeg));	//m2
+		Decoder7Segment hrHi( .In(InHrHi), .segmentDisplay(HrHiSeg));		//h1
+		Decoder7Segment hrLo( .In(InHrLo), .segmentDisplay(HrLoSeg));		//h2
+
 
 endmodule
