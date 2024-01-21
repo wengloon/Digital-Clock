@@ -10,10 +10,13 @@ module Digital_Clock(
 	
 	
 	reg [3:0] InSecLo, InSecHi, InMinLo, InMinHi;
+	reg [5:0] Sec, Min;
 	reg [31:0]segclk;
 	
 	initial
 		begin
+			Sec <= 6'd0;
+			Min <= 6'd0;
 			InSecLo <= 4'd0;
 			InSecHi <= 4'd0;
 			InMinLo <= 4'd0;
@@ -25,29 +28,27 @@ module Digital_Clock(
 			segclk <= segclk+1'b1; //counter goes up by 1
 			if ( segclk >= 32'd50000000 )
 				begin
-					InSecLo = InSecLo + 1'b1;
 					segclk <= 32'd0; //counter goes up by 1
-					if ( InSecLo >= 4'd10 )
+					Sec = Sec + 1'b1;
+					if ( Sec >= 6'd60 )
 						begin
-							InSecLo <= 4'd0;
-							InSecHi = InSecHi + 1'b1;
-							if ( InSecHi >= 4'd6 )
-								begin
-									InSecHi <= 4'd0;
-									InMinLo = InMinLo + 1'b1;
-									if ( InMinLo >= 4'd10 )
-										begin
-											InMinLo <= 4'd0;
-											InMinHi = InMinHi + 1'b1;
-											if ( InMinHi >= 4'd6 )
-												begin
-													InMinHi<= 4'd0;
-												end
-										end
-								end
+							Sec <= 6'd0;
+							Min = Min + 1'b1;
+							if ( Min >= 6'd60 )
+							begin
+								Min <= 6'd0;
+							end
 						end
 				end
 			end
+
+	always @(Sec)//1250
+		begin
+			InSecHi=Sec/10;		//50/10=5 , ""5""
+			InSecLo=Sec%10;		//5/10 = ""0""
+			InMinHi=Min/10;
+			InMinLo=Min%10;
+		end
 
 		Decoder7Segment secLo( .In(InSecLo), .segmentDisplay(SecLoSeg));
 		Decoder7Segment secHi( .In(InSecHi), .segmentDisplay(SecHiSeg));
