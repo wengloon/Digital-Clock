@@ -1,6 +1,6 @@
 module Digital_Clock(
 	input clk,
-	input slideSwitch,
+	input [2:0]slideSwitch,		// slideSwitch[0] - hold switch / slideSwitch[1] - minute adjust switch / slideSwitch[2] - hour adjust switch
 	input pushBtn,
 	output [6:0] SecLoSeg,
 	output [6:0] SecHiSeg, 
@@ -34,16 +34,35 @@ module Digital_Clock(
 	
 	always @( posedge clk )
 		begin
-			if( pushBtn == 1'd0)
+			if( pushBtn == 1'b0 )
 				begin
-					Sec <= 6'd0;
-					Min <= 6'd0;
-					Hour <= 5'd0;
+					case ( slideSwitch )
+						3'b1:
+							begin
+								Sec <= 6'd0;
+								Min <= 6'd0;
+								Hour <= 5'd0;
+							end
+						3'b111:
+							begin
+								Min <= 6'd0;
+								Hour <= 5'd0;
+							end
+						3'b011:
+							begin
+								Min <= 6'd0;
+							end
+						3'b101:
+							begin
+								Hour <= 6'd0;
+							end
+						default: /* did nothing */;
+					endcase
 					segclk <= 32'd0;
 				end
-			else if( slideSwitch )
+			else if( slideSwitch[0] )
 				begin
-
+					/* Clock stop - hold function*/
 				end
 			else
 				begin
