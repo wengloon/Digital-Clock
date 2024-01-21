@@ -1,6 +1,7 @@
 module Digital_Clock(
 	input clk,
 	input slideSwitch,
+	input pushBtn,
 	output [6:0] SecLoSeg,
 	output [6:0] SecHiSeg, 
 	output [6:0] MinLoSeg,
@@ -24,7 +25,7 @@ module Digital_Clock(
 			Hour <= 5'd0;
 			InSecLo <= 4'd0;
 			InSecHi <= 4'd0;
-			InMinLo <= 4'd0; 
+			InMinLo <= 4'd0;
 			InMinHi <= 4'd0;
 			InHrLo <= 4'd0;
 			InHrHi <= 4'd0;
@@ -33,7 +34,14 @@ module Digital_Clock(
 	
 	always @( posedge clk )
 		begin
-			if( slideSwitch )
+			if( pushBtn == 1'd0)
+				begin
+					Sec <= 6'd0;
+					Min <= 6'd0;
+					Hour <= 5'd0;
+					segclk <= 32'd0;
+				end
+			else if( slideSwitch )
 				begin
 
 				end
