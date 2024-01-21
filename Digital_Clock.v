@@ -1,8 +1,9 @@
 module Digital_Clock(
 	input clk,
+	input slideSwitch,
 	output [6:0] SecLoSeg,
 	output [6:0] SecHiSeg, 
-	output [6:0] MinLoSeg, 
+	output [6:0] MinLoSeg,
 	output [6:0] MinHiSeg, 
 	output [6:0] HrLoSeg, 
 	output [6:0] HrHiSeg
@@ -23,35 +24,43 @@ module Digital_Clock(
 			Hour <= 5'd0;
 			InSecLo <= 4'd0;
 			InSecHi <= 4'd0;
-			InMinLo <= 4'd0;
+			InMinLo <= 4'd0; 
 			InMinHi <= 4'd0;
 			InHrLo <= 4'd0;
 			InHrHi <= 4'd0;
+			segclk <= 32'd0;
 		end
 	
 	always @( posedge clk )
 		begin
-			segclk <= segclk+1'b1; //counter goes up by 1
-			if ( segclk >= 32'd50000000 )
+			if( slideSwitch )
 				begin
-					segclk <= 32'd0; //counter goes up by 1
-					Sec = Sec + 1'b1;
-					if ( Sec >= 6'd60 )
+
+				end
+			else
+				begin
+					segclk <= segclk+1'b1; //counter goes up by 1
+					if ( segclk >= 32'd50000000 )
 						begin
-							Sec <= 6'd0;
-							Min = Min + 1'b1;
-							if ( Min >= 6'd60 )
+							segclk <= 32'd0; //counter goes up by 1
+							Sec = Sec + 1'b1;
+							if ( Sec >= 6'd60 )
 								begin
-									Min <= 6'd0;
-									Hour = Hour + 1'b1;
-									if ( Hour >= 5'd24 )
+									Sec <= 6'd0;
+									Min = Min + 1'b1;
+									if ( Min >= 6'd60 )
 										begin
-											Hour <= 6'd0;
+											Min <= 6'd0;
+											Hour = Hour + 1'b1;
+											if ( Hour >= 5'd24 )
+												begin
+													Hour <= 6'd0;
+												end
 										end
 								end
 						end
 				end
-			end
+		end
 
 	//Convert data to two 7segment display
 	always @(Sec)
