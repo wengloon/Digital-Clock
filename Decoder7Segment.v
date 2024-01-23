@@ -1,3 +1,15 @@
+/*!>
+*  7 segment decoder module
+*
+*+ Input +* 
+* 4bit In	- Data input 0-9
+*
+*
+*+ Output +* 
+*  7bit segmentDisplay - data output to 7segment display
+*
+*
+<!*/
 module Decoder7Segment( 
 	input [3:0] In,
 	output reg [6:0] segmentDisplay
