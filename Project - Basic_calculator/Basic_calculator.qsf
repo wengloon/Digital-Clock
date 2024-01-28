@@ -126,18 +126,18 @@ set_location_assignment PIN_B8 -to push_button[0]
 set_location_assignment PIN_A7 -to push_button[1]
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/push_button_pulse_gen.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/Mux2in1out.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/Basic_calculator.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/minus.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/adder.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/multiple.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/divider.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/input_value_setup.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/demux.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/calculate.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/Decoder7Segment_expand.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/digit_separator.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/state_controller.v"
-set_global_assignment -name VERILOG_FILE "../Digital-Clock/Module/DataMux2in1out.v"
+set_global_assignment -name VERILOG_FILE ../Module/DataMux4in1out.v
+set_global_assignment -name VERILOG_FILE ../Module/push_button_pulse_gen.v
+set_global_assignment -name VERILOG_FILE ../Module/Mux2in1out.v
+set_global_assignment -name VERILOG_FILE ../Module/minus.v
+set_global_assignment -name VERILOG_FILE ../Module/adder.v
+set_global_assignment -name VERILOG_FILE ../Module/multiple.v
+set_global_assignment -name VERILOG_FILE ../Module/divider.v
+set_global_assignment -name VERILOG_FILE ../Module/input_value_setup.v
+set_global_assignment -name VERILOG_FILE ../Module/demux.v
+set_global_assignment -name VERILOG_FILE ../Module/calculate.v
+set_global_assignment -name VERILOG_FILE ../Module/Decoder7Segment_expand.v
+set_global_assignment -name VERILOG_FILE ../Module/digit_separator.v
+set_global_assignment -name VERILOG_FILE ../Module/state_controller.v
+set_global_assignment -name VERILOG_FILE Basic_calculator.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
