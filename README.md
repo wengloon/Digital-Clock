@@ -7,3 +7,4 @@ Demo:
 
 Project:
 1. Digital_Clock
+2. Simple_Calculator
