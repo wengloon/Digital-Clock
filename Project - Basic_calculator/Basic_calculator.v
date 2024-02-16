@@ -37,7 +37,7 @@ wire [5:0] digit_pos, ten_pos, hundred_pos, thousand_pos, ten_thousand_pos, hund
 							.enable_switch(slide_switch[2]), 
 							.in_val(wire_S0), 
 							.in_prev_res( wire_res ),
-							.led(led), 
+							.led(led[3:0]), 
 							.display_sel(displ_sel), 
 							.S1(S1), 
 							.S2(S2));

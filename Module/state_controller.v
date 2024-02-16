@@ -4,7 +4,7 @@ input reset_button,
 input enable_switch,
 input [39:0] in_val,
 input [39:0] in_prev_res,
-output reg[9:0] led,
+output reg[3:0] led,
 output reg[39:0] S1,
 output reg[39:0] S2,
 output reg [1:0]display_sel
@@ -24,7 +24,7 @@ initial
 		display_sel = 2'b00;
 		S1 = 40'd0;
 		S2 = 40'd0;
-		led = 10'b1111111111;
+		led = 4'b1111;
 	end
 	
 always @ ( posedge reset_button or posedge enter_button )
@@ -35,7 +35,7 @@ always @ ( posedge reset_button or posedge enter_button )
 				display_sel = 2'b00;
 				S1 = 40'd0;
 				S2 = 40'd0;
-				led = 10'b0000000000;
+				led = 4'b0000;
 			end
 		else
 			begin
@@ -47,20 +47,20 @@ always @ ( posedge reset_button or posedge enter_button )
 									state = INPUT_2_STATE;
 									S1 = in_val;
 									display_sel = 2'b01;
-									led = 10'b0000000001;
+									led = 4'b0001;
 								end
 							INPUT_2_STATE:
 								begin
 									state = INPUT_RESULT_STATE;
 									S2 = in_val;
 									display_sel = 2'b11;
-									led = 10'b0000000010;
+									led = 4'b0010;
 								end			
 							INPUT_RESULT_STATE:
 								begin
 									state = INPUT_CONT_STATE;
 									display_sel = 2'b01;
-									led = 10'b0000000100;
+									led = 4'b0100;
 								end
 							INPUT_CONT_STATE:
 								begin
@@ -68,7 +68,7 @@ always @ ( posedge reset_button or posedge enter_button )
 									S1 <= in_prev_res;
 									S2 = in_val;
 									display_sel = 2'b11;
-									led = 10'b0000001000;
+									led = 4'b1000;
 								end
 						endcase
 					end
