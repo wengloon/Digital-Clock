@@ -69,7 +69,7 @@ always @ ( posedge reset_button or posedge enter_button )
 								end
 							INPUT_CONT_STATE:
 								begin
-									state = INPUT_2_STATE;
+									state = INPUT_RESULT_STATE;
 									S1 <= in_prev_res;
 									S2 = in_val;
 									display_sel = 2'b11;

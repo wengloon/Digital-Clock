@@ -26,7 +26,7 @@ assign enable = displ_sel[0] & displ_sel[1];
 
 	push_button_pulse_gen enter_pulse( .i_clk(clk), .i_push_button(push_button[1]) , .o_pulse(push_button_pulse[1]) );
 	push_button_pulse_gen reset_pulse( .i_clk(clk), .i_push_button(push_button[0]) , .o_pulse(push_button_pulse[0]) );
-	pulse_generator_In500Mhz_Out100ms enable_pulse_gen (.i_clk(clk), .i_en(enable) , .o_pulse(enable_pulse) );
+	slide_switch_pulse_gen enable_pulse_gen (.i_clk(clk), .i_en(enable) , .o_pulse(enable_pulse) );
 
 	input_value_setup in_value(.i_slide_switch(slide_switch[9:4]), .i_enable(!slide_switch[2]), .i_push_button(push_button_pulse[1]), .o_value(wire_S0));	
 
