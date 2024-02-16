@@ -126,6 +126,7 @@ set_location_assignment PIN_B8 -to push_button[0]
 set_location_assignment PIN_A7 -to push_button[1]
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_FILE ../Module/pulse_generator_In500Mhz_Out100ms.v
 set_global_assignment -name VERILOG_FILE ../Module/DataMux4in1out.v
 set_global_assignment -name VERILOG_FILE ../Module/push_button_pulse_gen.v
 set_global_assignment -name VERILOG_FILE ../Module/Mux2in1out.v

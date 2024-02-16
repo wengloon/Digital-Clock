@@ -12,22 +12,21 @@ output [6:0] hundredThousandeg
 );
 
 
-reg [2:0] state;
-reg error, sign;
-wire [1:0] arithmatic; 
+reg error;
 wire [1:0] displ_sel;
-wire enable;
-
-assign enable = displ_sel[0] & displ_sel[1];
-
-wire [39:0] S1, S2, result, value_display;
-wire [39:0] wire_S0, wire_S1, wire_S2, wire_res; 
-wire wire_err, wire_sign;
+wire enable, enable_pulse;
+wire [39:0] S1, S2, value_display;
+wire [39:0] wire_S0, wire_res; 
+wire wire_err, wire_sign_from_state_controller, wire_sign_from_calculate;
 wire [1:0]	push_button_pulse;
 wire [5:0] digit_pos, ten_pos, hundred_pos, thousand_pos, ten_thousand_pos, hundred_thousand_pos;
 
+
+assign enable = displ_sel[0] & displ_sel[1];
+
 	push_button_pulse_gen enter_pulse( .i_clk(clk), .i_push_button(push_button[1]) , .o_pulse(push_button_pulse[1]) );
 	push_button_pulse_gen reset_pulse( .i_clk(clk), .i_push_button(push_button[0]) , .o_pulse(push_button_pulse[0]) );
+	pulse_generator_In500Mhz_Out100ms enable_pulse_gen (.i_clk(clk), .i_en(enable) , .o_pulse(enable_pulse) );
 
 	input_value_setup in_value(.i_slide_switch(slide_switch[9:4]), .i_enable(!slide_switch[2]), .i_push_button(push_button_pulse[1]), .o_value(wire_S0));	
 
@@ -37,10 +36,23 @@ wire [5:0] digit_pos, ten_pos, hundred_pos, thousand_pos, ten_thousand_pos, hund
 							.enable_switch(slide_switch[2]), 
 							.in_val(wire_S0), 
 							.in_prev_res( wire_res ),
+							.i_sign(wire_sign_from_calculate),
 							.led(led[3:0]), 
+							.o_sign(wire_sign_from_state_controller),
 							.display_sel(displ_sel), 
 							.S1(S1), 
 							.S2(S2));
+	
+	calculate calculate_process(	.i_s1(S1), 
+											.i_s2(S2), 
+											.i_sign(wire_sign_from_state_controller),
+											.i_en(enable_pulse), 
+											.i_reset(push_button_pulse[0]),
+											.i_arith_func(slide_switch[1:0]), 
+											.o_sign(wire_sign_from_calculate),
+											.o_result(wire_res), 
+											.led(led[9]), 
+											.o_err(wire_err));
 
 	DataMux4in1out disp( .s1( wire_S0 ), 
 								.s2( wire_S0 ), 
@@ -48,19 +60,9 @@ wire [5:0] digit_pos, ten_pos, hundred_pos, thousand_pos, ten_thousand_pos, hund
 								.s4( wire_res ), 
 								.sel(displ_sel), 
 								.out(value_display));
-	
-	calculate calculate_process(	.i_s1(S1), 
-											.i_s2(S2), 
-											.i_sign(wire_sign),
-											.i_en(enable), 
-											.i_arith_func(slide_switch[1:0]), 
-											.o_result(wire_res), 
-											.o_err(wire_err), 
-											.o_sign(wire_sign));
-
 					
 	digit_separator separator( .i_value(value_display), 
-										.i_sign(wire_sign), 
+										.i_sign(wire_sign_from_calculate), 
 										.i_err(error),
 										.digit_pos(digit_pos), 
 										.ten_pos(ten_pos), 
