@@ -32,7 +32,8 @@ wire [5:0] digit_pos, ten_pos, hundred_pos, thousand_pos, ten_thousand_pos, hund
 	input_value_setup in_value(.i_slide_switch(slide_switch[9:4]), .i_enable(!slide_switch[2]), .i_push_button(push_button_pulse[1]), .o_value(wire_S0));	
 
 	state_controller calculator_state( 
-							.push_button(push_button_pulse), 
+							.enter_button(push_button_pulse[1]), 
+							.reset_button(push_button_pulse[0]), 
 							.enable_switch(slide_switch[2]), 
 							.in_val(wire_S0), 
 							.in_prev_res( wire_res ),

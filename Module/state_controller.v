@@ -1,5 +1,6 @@
 module state_controller(
-input [1:0]push_button,
+input enter_button,
+input reset_button,
 input enable_switch,
 input [39:0] in_val,
 input [39:0] in_prev_res,
@@ -26,9 +27,9 @@ initial
 		led = 10'b1111111111;
 	end
 	
-always @ ( posedge push_button[0] or posedge push_button[1] )
+always @ ( posedge reset_button or posedge enter_button )
 	begin
-		if ( push_button[0] )
+		if ( reset_button )
 			begin
 				state = INPUT_1_STATE;
 				display_sel = 2'b00;
@@ -38,7 +39,7 @@ always @ ( posedge push_button[0] or posedge push_button[1] )
 			end
 		else
 			begin
-				if( enable_switch && ( !push_button[1] ) )
+				if( enable_switch && enter_button )
 					begin					
 						case ( state )
 							INPUT_1_STATE:
