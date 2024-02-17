@@ -63,7 +63,7 @@ assign enable = displ_sel[0] & displ_sel[1];
 					
 	digit_separator separator( .i_value(value_display), 
 										.i_sign(wire_sign_from_calculate), 
-										.i_err(error),
+										.i_err(wire_err),
 										.digit_pos(digit_pos), 
 										.ten_pos(ten_pos), 
 										.hundred_pos(hundred_pos), 
