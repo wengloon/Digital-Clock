@@ -35,7 +35,7 @@ always @( posedge i_en  or posedge i_reset)
 			end
 		else
 			begin
-				if( i_en )
+				if( i_en && ~o_err)
 					begin
 						led = 1'd0;
 						case ( i_arith_func )
