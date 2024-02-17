@@ -6,7 +6,6 @@ input i_sign,
 input i_en,
 input i_reset,
 input [1:0]i_arith_func,
-output reg led,
 output reg [39:0]o_result,
 output reg o_err,
 output reg o_sign
@@ -29,7 +28,6 @@ always @( posedge i_en  or posedge i_reset)
 	begin
 		if( i_reset )
 			begin
-				led = 1'd1;
 				o_err = 1'd0;
 				o_sign = 1'd0;
 			end
@@ -37,7 +35,6 @@ always @( posedge i_en  or posedge i_reset)
 			begin
 				if( i_en && ~o_err)
 					begin
-						led = 1'd0;
 						case ( i_arith_func )
 							ADD:
 								begin
