@@ -5,6 +5,7 @@ input [39:0]i_s2,
 input i_sign,
 input i_en,
 input i_reset,
+input i_clk,
 input [1:0]i_arith_func,
 output reg [39:0]o_result,
 output reg o_err,
@@ -24,81 +25,83 @@ initial
 	end
 
 
-always @( posedge i_en  or posedge i_reset)
+always @( posedge i_clk )
 	begin
-		if( i_reset )
+		if( i_en | i_reset)
 			begin
-				o_err = 1'd0;
-				o_sign = 1'd0;
-			end
-		else
-			begin
-				if( i_en && ~o_err)
+				if( i_reset )
 					begin
-						case ( i_arith_func )
-							ADD:
-								begin
-									o_result = i_s1 + i_s2;
-									o_sign = 1'd0;
-								end
-							MINUS:
-								begin
-									if( i_sign )
+						o_err = 1'd0;
+						o_sign = 1'd0;
+					end
+				else
+					begin
+						if( i_en && ~o_err)
+							begin
+								case ( i_arith_func )
+									ADD:
 										begin
-											o_result = i_s2 + i_s1;
-											o_sign = 1'd1;
+											o_result = i_s1 + i_s2;
+											o_sign = 1'd0;
 										end
-									else
+									MINUS:
 										begin
-											if( i_s2 > i_s1 ) 
+											if( i_sign )
 												begin
-													o_result = i_s2 - i_s1;
+													o_result = i_s2 + i_s1;
 													o_sign = 1'd1;
 												end
 											else
 												begin
-													o_result = i_s1 - i_s2;
-													o_sign = 1'd0;
+													if( i_s2 > i_s1 ) 
+														begin
+															o_result = i_s2 - i_s1;
+															o_sign = 1'd1;
+														end
+													else
+														begin
+															o_result = i_s1 - i_s2;
+															o_sign = 1'd0;
+														end
 												end
 										end
-								end
-							MULTIPLE:
-								begin
-									o_sign = 1'd0;
-									o_result = i_s1 * i_s2;
-								end
-							DIVIDE:
-								begin
-									o_sign = 1'd0;
-									o_result = i_s1/i_s2;
-								end
-						endcase
-					end
+									MULTIPLE:
+										begin
+											o_sign = 1'd0;
+											o_result = i_s1 * i_s2;
+										end
+									DIVIDE:
+										begin
+											o_sign = 1'd0;
+											o_result = i_s1/i_s2;
+										end
+								endcase
+							end
 
-			if( o_sign ) 
-				begin
-					if( o_result > 40'd99999 )
+					if( o_sign ) 
 						begin
-							o_err = 1'd1;
+							if( o_result > 40'd99999 )
+								begin
+									o_err = 1'd1;
+								end
+							else
+								begin
+									o_err = 1'd0;
+								end
 						end
 					else
 						begin
-							o_err = 1'd0;
+							if( o_result > 40'd999999 )
+								begin
+									o_err = 1'd1;
+								end
+							else
+								begin
+									o_err = 1'd0;
+								end
 						end
-				end
-			else
-				begin
-					if( o_result > 40'd999999 )
-						begin
-							o_err = 1'd1;
-						end
-					else
-						begin
-							o_err = 1'd0;
-						end
-				end
+					end
 			end
 	end
-
 	
 endmodule	

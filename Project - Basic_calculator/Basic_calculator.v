@@ -27,7 +27,7 @@ assign enable = displ_sel[0] & displ_sel[1];
 	push_button_pulse_gen reset_pulse( .i_clk(clk), .i_push_button(push_button[0]) , .o_pulse(reset_button_pulse) );
 	slide_switch_pulse_gen enable_pulse_gen (.i_clk(clk), .i_en(enable) , .o_pulse(enable_pulse) );
 
-	input_value_setup in_value(.i_slide_switch(slide_switch[9:4]), .i_enable(!slide_switch[2]), .i_push_button(enter_button_pulse), .o_value(wire_S0));	
+	input_value_setup in_value(.i_slide_switch(slide_switch[9:4]), .i_enable(!slide_switch[2]), .i_clk(clk), .i_push_button(enter_button_pulse), .o_value(wire_S0));	
 
 	state_controller calculator_state( 
 							.enter_button(enter_button_pulse), 
@@ -36,6 +36,7 @@ assign enable = displ_sel[0] & displ_sel[1];
 							.in_val(wire_S0), 
 							.in_prev_res( wire_res ),
 							.i_sign(wire_sign_from_calculate),
+							.i_clk( clk ),
 							.led(led[3:0]), 
 							.o_sign(wire_sign_from_state_controller),
 							.display_sel(displ_sel), 
@@ -47,6 +48,7 @@ assign enable = displ_sel[0] & displ_sel[1];
 											.i_sign(wire_sign_from_state_controller),
 											.i_en(enable_pulse), 
 											.i_reset(reset_button_pulse),
+											.i_clk(clk),
 											.i_arith_func(slide_switch[1:0]), 
 											.o_sign(wire_sign_from_calculate),
 											.o_result(wire_res), 
