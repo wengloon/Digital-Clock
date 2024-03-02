@@ -12,7 +12,7 @@
 *
 <!*/
 module Divider_st(
-input [5:0] InData,
+input [7:0] InData,
 input [3:0] InDivisor,
 output reg[3:0] OutData
 
