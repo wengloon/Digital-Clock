@@ -18,13 +18,6 @@ parameter MULTIPLE		= 2'b10;
 parameter DIVIDE 		= 2'b11;
 
 
-initial
-	begin
-		o_err = 1'd0;
-		o_sign = 1'd0;
-	end
-
-
 always @( posedge i_clk )
 	begin
 		if( i_en | i_reset)

@@ -18,11 +18,6 @@ output reg o_pulse
 
 reg [4:0] count;
 
-initial
-	begin
-		count = 5'd0;
-	end
-
 always @ ( posedge i_clk)
 	begin
 		if( i_en )

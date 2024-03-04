@@ -20,12 +20,6 @@ input [5:0]i_limit,
 output reg o_en,
 output reg [5:0] o_counter
 );
-
-initial
-	begin 
-		o_en = 1'd0;
-		o_counter = 6'd0;
-	end
 	
 	
 always @( posedge i_clk )

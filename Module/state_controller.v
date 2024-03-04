@@ -21,15 +21,6 @@ parameter INPUT_CONT_STATE 		= 3'b100;
 
 reg [2:0] state;
 
-initial
-	begin
-		state = INPUT_1_STATE;
-		display_sel = 2'b00;
-		S1 = 40'd0;
-		S2 = 40'd0;
-		led = 4'b1111;
-	end
-
 always @ ( posedge i_clk )
 	begin
 		if( reset_button || enter_button )
