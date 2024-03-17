@@ -1,11 +1,8 @@
 module UART_Tx(
 input i_clk,
-input i_transmit,
-input i_rst,
+input i_tx_go,
 input [8:0]i_din,
-output reg o_led,
-output reg o_transmit_complete,
-output reg o_flush_complete,
+output reg o_tx_done,
 output reg o_dout
 );
 
@@ -27,9 +24,9 @@ parameter	IDLE		= 4'd0,
 			PARITY 		= 4'd9;
 
 			
-always @ ( posedge i_clk or negedge i_transmit)
+always @ ( posedge i_clk or negedge i_tx_go)
 	begin
-		if(~i_transmit)
+		if(~i_tx_go)
 			begin
 				state <= START_BIT;
 				buffer <= {1'b0,i_din[6:0],1'b0};
@@ -42,13 +39,13 @@ always @ ( posedge i_clk or negedge i_transmit)
 						begin
 							o_dout <= 1'b1;
 							start <=  1'b0;
-							o_transmit_complete <= 1'd0;
+							o_tx_done <= 1'd0;
 						end
 					START_BIT:
 						begin
 							o_dout <= buffer[0];
 							state <=  BIT_0;
-							o_transmit_complete <= 1'd0;
+							o_tx_done <= 1'd0;
 						end
 					BIT_0:
 						begin

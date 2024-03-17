@@ -45,13 +45,11 @@ clock_divider_50MHz_to_115200 clock(	.i_enable(slide_switch),
 													.o_clk(baud_clock)
 );
 
-UART_Tx tx(	.i_transmit(push_button),
-				.i_rst(~reset_latch_signal),
+UART_Tx tx(	.i_tx_go(push_button),
 				.i_clk(baud_clock),
 				.i_din(data0),
 				.o_dout(GPIO_Tx),
-				.o_flush_complete(flush_signal),
-				.o_transmit_complete(tx_complete_signal)
+				.o_tx_done(tx_complete_signal)
 );
 
 always @ ( negedge push_button )
@@ -75,7 +73,7 @@ always @ ( posedge rx_complete_signal )
 	end
 UART_Rx rx(	.i_clk(baud_clock),
 				.i_din(GPIO_Rx),
-				.complete_signal(rx_complete_signal),
+				.rx_done(rx_complete_signal),
 				.o_dout(Rx_Data)
 );
 
