@@ -11,7 +11,7 @@
 *
 <!*/
 module Decoder7Segment( 
-	input [3:0] In,
+	input [7:0] In,
 	output reg [6:0] segmentDisplay
 	);
 	
