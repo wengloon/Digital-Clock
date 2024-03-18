@@ -45,13 +45,19 @@ clock_divider_50MHz_to_115200 clock(	.i_enable(slide_switch),
 													.o_clk(baud_clock)
 );
 
-UART_Tx tx(	.i_tx_go(push_button),
+UART_Tx tx(	.i_tx_go(~rx_complete_signal),
 				.i_clk(baud_clock),
-				.i_din(data0),
+				.i_din(Rx_Data),
 				.o_dout(GPIO_Tx),
 				.o_tx_done(tx_complete_signal)
 );
 
+UART_Rx rx(	.i_clk(baud_clock),
+				.i_din(GPIO_Rx),
+				.rx_done(rx_complete_signal),
+				.o_dout(Rx_Data)
+);
+/*
 always @ ( negedge push_button )
 	begin
 		data0 <= data1;
@@ -60,7 +66,7 @@ always @ ( negedge push_button )
 		data3 <= data4;
 		data4 <= data0;
 	end
-
+*/
 	
 always @ ( posedge rx_complete_signal )
 	begin
@@ -71,11 +77,7 @@ always @ ( posedge rx_complete_signal )
 		buffer[4] <= buffer[3];
 		buffer[5] <= buffer[4];
 	end
-UART_Rx rx(	.i_clk(baud_clock),
-				.i_din(GPIO_Rx),
-				.rx_done(rx_complete_signal),
-				.o_dout(Rx_Data)
-);
+
 
 Decoder7Segment displaybuffer0( .In(buffer[0]), .segmentDisplay(segmentDisplay0));	//s1
 Decoder7Segment displaybuffer1( .In(buffer[1]), .segmentDisplay(segmentDisplay1));	//s1
