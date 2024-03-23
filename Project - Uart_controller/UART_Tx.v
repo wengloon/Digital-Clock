@@ -1,104 +1,97 @@
-module UART_Tx(
+//CLKS_PER_BIT = 50 MHZ clock, 115200 baud UART
+module UART_Tx
+#(parameter CLKS_PER_BIT = 435)
+(
 input i_clk,
-input i_tx_go,
+input i_data_avail,
 input [7:0]i_din,
-output reg o_tx_done,
-output reg o_dout
+output reg o_tx_line,
+output reg o_done
 );
 
-reg [9:0] buffer;
-reg [9:0] count;
-reg [3:0] state;
-reg	start;
-reg	operation;
 
-parameter	IDLE		= 4'd0,
-			START_BIT	= 4'd1,
-			BIT_0 		= 4'd2,
-			BIT_1 		= 4'd3,
-			BIT_2 		= 4'd4,
-			BIT_3 		= 4'd5,
-			BIT_4 		= 4'd6,
-			BIT_5 		= 4'd7,
-			BIT_6 		= 4'd8,
-			BIT_7 		= 4'd9,
-			PARITY 		= 4'd10;
+reg [1:0] state;
+reg [15:0] counter;
+reg [2:0] bit_idx;
+reg [7:0] buffer;
 
+
+localparam	IDLE	= 2'd0,
+			START	= 2'd1,
+			DATA	= 2'd2,
+			STOP	= 2'd3;
 			
-always @ ( posedge i_clk or negedge i_tx_go)
+
+always @ ( posedge i_clk )
 	begin
-		if(~i_tx_go)
-			begin
-				state <= START_BIT;
-				buffer <= {1'b0,i_din[7:0],1'b0};
-				start <= 1'd1;
-			end
-		else
-			begin
-				case (state)
-					IDLE:
+		case( state )
+			IDLE:
+				begin
+					o_tx_line <= 1'd1;	//tx line IDLE HIGH
+					o_done <= 1'd0;
+					counter <= 16'd0;
+					bit_idx <= 1'd0;
+					if( i_data_avail )
 						begin
-							o_dout <= 1'b1;
-							start <=  1'b0;
-							o_tx_done <= 1'd0;
+							buffer <= i_din;
+							state <= START;
 						end
-					START_BIT:
+				end
+			START:	//send start bit
+				begin
+					o_tx_line <= 1'd0;
+					//wait CLKS_PER_BTI -1 clock cycles for start bit to 1
+					if( counter < CLKS_PER_BIT - 1)
 						begin
-							o_dout <= buffer[0];
-							state <=  BIT_0;
-							o_tx_done <= 1'd0;
+							counter <= counter + 16'd1;
 						end
-					BIT_0:
+					else
 						begin
-							o_dout <= buffer[1];
-							state <=  BIT_1;
+							counter <= 16'd0;
+							state <= DATA;
 						end
-					BIT_1:
+				end
+			DATA:
+				begin
+					o_tx_line <= buffer[bit_idx];
+					if( counter < CLKS_PER_BIT - 1)
 						begin
-							o_dout <= buffer[2];
-							state <=  BIT_2;
+							counter <= counter + 16'd1;
 						end
-					BIT_2:
+					else
 						begin
-							o_dout <= buffer[3];
-							state <=  BIT_3;
+							counter <= 16'd0;
+							// Check if we have sent out all bits
+							if( bit_idx < 7)
+								begin
+									bit_idx <= bit_idx + 3'd1;
+								end
+							else
+								begin
+									bit_idx <= 3'd0;
+									state <= STOP;
+								end
 						end
-					BIT_3:
+				end
+			STOP: //send stop bit
+				begin
+					o_tx_line <= 1;
+					if( counter < CLKS_PER_BIT - 1)
 						begin
-							o_dout <= buffer[4];
-							state <=  BIT_4;
+							counter <= counter + 16'd1;
 						end
-					BIT_4:
+					else
 						begin
-							o_dout <= buffer[5];
-							state <=  BIT_5;
+							o_done <= 1;
+							state <= IDLE;
 						end
-					BIT_5:
-						begin
-							o_dout <= buffer[6];
-							state <=  BIT_6;
-						end
-					BIT_6:
-						begin
-							o_dout <= buffer[7];
-							state <=  BIT_7;
-						end
-					BIT_7:
-						begin
-							o_dout <= buffer[8];
-							state <=  PARITY;
-						end
-					PARITY:
-						begin
-							o_dout <= buffer[9];
-							state <=  IDLE;
-						end
-					default:
-						begin
-							state <=  IDLE;
-						end
-				endcase
-			end
+				end
+			default:
+				begin
+					state <= IDLE;
+				end
+		endcase
+
 	end
 	
 endmodule 

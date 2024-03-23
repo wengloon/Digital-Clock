@@ -1,4 +1,9 @@
-module UART_Controller(
+module UART_Controller
+#( parameter DATA_BIT = 8,	// Data bits
+			STOPBIT_TICK = 16  // stop bit ticks
+)
+
+(
 input i_clk,
 input slide_switch,
 input push_button,
@@ -16,6 +21,7 @@ output GPIO_Tx
 
 
 wire baud_clock, enter_latch_signal, reset_latch_signal, rx_complete_signal, tx_complete_signal, flush_signal;
+wire baud_tick;
 
 wire [7:0] Rx_Data;
 reg [7:0] buffer[5:0];
@@ -40,34 +46,25 @@ push_button_latch	reset_latch(.i_clk(i_clk),
 										.o_signal(reset_latch_signal)	//bottom push button
 );
 */
-clock_divider_50MHz_to_115200 clock(	.i_enable(slide_switch),
-													.i_clk(i_clk),
-													.o_clk(baud_clock)
+
+UART_Tx tx(
+.i_clk(i_clk),
+.i_data_avail(~push_button),
+.i_din(8'h30),
+.o_tx_line(GPIO_Tx),
+.o_done(tx_complete_signal)
 );
 
-UART_Tx tx(	.i_tx_go(~rx_complete_signal),
-				.i_clk(baud_clock),
-				.i_din(Rx_Data),
-				.o_dout(GPIO_Tx),
-				.o_tx_done(tx_complete_signal)
+
+UART_Rx rx
+(
+.i_clk(i_clk),
+.i_rx_line(GPIO_Rx),
+.o_data_avail(rx_complete_signal),
+.o_dout(Rx_Data)
 );
 
-UART_Rx rx(	.i_clk(baud_clock),
-				.i_din(GPIO_Rx),
-				.rx_done(rx_complete_signal),
-				.o_dout(Rx_Data)
-);
-/*
-always @ ( negedge push_button )
-	begin
-		data0 <= data1;
-		data1 <= data2;
-		data2 <= data3;
-		data3 <= data4;
-		data4 <= data0;
-	end
-*/
-	
+
 always @ ( posedge rx_complete_signal )
 	begin
 		buffer[0] <= Rx_Data;
@@ -77,6 +74,8 @@ always @ ( posedge rx_complete_signal )
 		buffer[4] <= buffer[3];
 		buffer[5] <= buffer[4];
 	end
+	
+
 
 
 Decoder7Segment displaybuffer0( .In(buffer[0]), .segmentDisplay(segmentDisplay0));	//s1
