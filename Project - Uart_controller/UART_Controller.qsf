@@ -115,4 +115,5 @@ set_global_assignment -name VERILOG_FILE UART_Tx.v
 set_global_assignment -name VERILOG_FILE UART_Rx.v
 set_global_assignment -name VERILOG_FILE UART_Controller.v
 set_global_assignment -name VERILOG_FILE ../Module/push_button_latch.v
+set_global_assignment -name VERILOG_FILE ../Module/FIFO_10_depth__8bits.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
